@@ -18,7 +18,10 @@
     <ClCompile Include="Main.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Downloads\glad\src\glad.c">
+    <ClCompile Include="src\shader\FileName.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\glad\src\glad.c">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,5 +32,9 @@
     <None Include="fragmentShader.glsl">
       <Filter>Arquivos de Origem</Filter>
     </None>
+    <None Include="src\shader\defineVector.glsh" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\SDL3-3.2.18\lib\x64\SDL3.lib" />
   </ItemGroup>
 </Project>
