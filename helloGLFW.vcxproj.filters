@@ -33,8 +33,17 @@
       <Filter>Arquivos de Origem</Filter>
     </None>
     <None Include="src\shader\defineVector.glsh" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\SDL3-3.2.18\lib\x64\SDL3.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="prints\Screenshot_67.png">
+      <Filter>Arquivos de Recurso</Filter>
+    </Image>
+    <Image Include="prints\Screenshot_68.png">
+      <Filter>Arquivos de Recurso</Filter>
+    </Image>
   </ItemGroup>
 </Project>

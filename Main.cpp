@@ -57,11 +57,11 @@ int main()
 {
 	SDL_Init(SDL_INIT_VIDEO);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-	SDL_Window* window = SDL_CreateWindow("01", 800, 600, NULL);
+	SDL_Window* window = SDL_CreateWindow("01", 800, 600, SDL_WINDOW_OPENGL);
 	
 	if (window == NULL) {
 		std::cout << "creation of windows have falied!!!" << "\n";
@@ -70,7 +70,7 @@ int main()
 
 	SDL_GL_CreateContext(window);
 
-	if (!gladLoadGL(SDL_GL_GetProcAddress)) {
+	if (!gladLoadGL()) {
 		std::cout << "Failed to initialize GLAD" << "\n";
 		return -1;
 	}
