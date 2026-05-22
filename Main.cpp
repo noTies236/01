@@ -1,18 +1,19 @@
 #include <iostream>
 #include <glad/glad.h> 
 #include <SDL3/SDL.h>
+#include "./debug/debug.h"
+
+#define glDebug(x); x; glClearAllErros; glCatchErrors(__FILE__, __LINE__, #x);
 
 //void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 //void processInput(GLFWwindow *window);
 //
-
 
 // resoze window? idk 
 //void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 //{
 //	glViewport(0, 0, width, height);
 //}
-
 
 //void processInput(GLFWwindow *window) 
 //{ 
@@ -62,7 +63,7 @@ int main()
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	SDL_Window* window = SDL_CreateWindow("01", 800, 600, SDL_WINDOW_OPENGL);
-	
+
 	if (window == NULL) {
 		std::cout << "creation of windows have falied!!!" << "\n";
 		return -1;
@@ -80,9 +81,9 @@ int main()
 
 	//std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glDebug(glGenBuffers(1, &VBO));
+	glDebug(glBindBuffer(GL_ARRAY_BUFFER, VBO););
+	glDebug(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
 
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
@@ -99,7 +100,7 @@ int main()
 	}
 
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShadeSource, NULL);
+	glDebug(glShaderSource(fragmentShader, 1, &fragmentShadeSource, NULL););
 	glCompileShader(fragmentShader);
 
 	shaderProgram = glCreateProgram();
@@ -107,7 +108,7 @@ int main()
 	glAttachShader(shaderProgram, fragmentShader);
 	glLinkProgram(shaderProgram);
 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	
+
 	if (!success) {
 		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
 	}
@@ -120,7 +121,7 @@ int main()
 	glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices),  vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
