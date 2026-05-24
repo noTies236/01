@@ -129,7 +129,7 @@ int main()
 	glUseProgram(shaderProgram);
 
 	glGenVertexArrays(1, &VAO);
-
+	
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -138,7 +138,17 @@ int main()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	while (true) {
+	bool isRunning = true;
+	SDL_Event event;
+
+	while (isRunning) {
+		if (SDL_PollEvent(&event)) {
+			if (event.type == SDL_EVENT_QUIT) {
+				isRunning = false;
+			}
+		}
+
+
 		/*processInput(window);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -151,6 +161,6 @@ int main()
 		glDrawArrays(GL_TRIANGLES, 0, 3);*/
 	}
 
-	//glfwTerminate();
+	//glfwTerminate();   
 	return 0;
 }
