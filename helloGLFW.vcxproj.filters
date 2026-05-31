@@ -15,28 +15,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
-    <ClCompile Include="src\shader\FileName.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
     <ClCompile Include="lib\glad\src\glad.c">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="debug\debug.cpp">
+    <ClCompile Include="src\debug\debug.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pipeline\triangle.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="vertexShader.glsl">
-      <Filter>Arquivos de Origem</Filter>
-    </None>
-    <None Include="fragmentShader.glsl">
-      <Filter>Arquivos de Origem</Filter>
-    </None>
-    <None Include="src\shader\defineVector.glsh" />
+    <None Include="src\shader\vertex.glsl" />
     <None Include="README.md" />
+    <None Include="src\shader\fragment.glsl" />
+    <None Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\SDL3-3.2.18\lib\x64\SDL3.lib" />
@@ -59,8 +55,20 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="debug\debug.h">
+    <ClInclude Include="src\debug\debug.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
+    <ClInclude Include="src\pipeline\triangle.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="src\type\type.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pipeline\OBJLoader.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="src\model\SmallKey.obj" />
   </ItemGroup>
 </Project>

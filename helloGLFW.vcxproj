@@ -134,16 +134,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="debug\debug.cpp" />
+    <ClCompile Include="src\debug\debug.cpp" />
     <ClCompile Include="lib\glad\src\glad.c" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="src\shader\FileName.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\pipeline\triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragmentShader.glsl" />
-    <None Include="README.md" />
-    <None Include="src\shader\defineVector.glsh" />
-    <None Include="vertexShader.glsl" />
+    <None Include=".gitignore" />
+    <None Include="src\shader\fragment.glsl" />
+    <None Include="src\shader\vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\SDL3-3.2.18\lib\x64\SDL3.lib" />
@@ -156,7 +155,15 @@
     <Image Include="prints\Screenshot_71.png" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="debug\debug.h" />
+    <ClInclude Include="src\debug\debug.h" />
+    <ClInclude Include="src\pipeline\OBJLoader.h" />
+    <ClInclude Include="src\pipeline\triangle.h" />
+    <ClInclude Include="src\type\type.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="src\model\SmallKey.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Object>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

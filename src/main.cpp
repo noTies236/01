@@ -2,6 +2,8 @@
 #include <glad/glad.h> 
 #include <SDL3/SDL.h>
 #include "./debug/debug.h"
+#include "./pipeline/triangle.h"
+#include "./pipeline/OBJLoader.h"
 
 #define glDebug(x) glClearAllErros(); x; glCatchErrors(__FILE__, __LINE__, #x); 
 
@@ -21,37 +23,6 @@
 //		glfwSetWindowShouldClose(window, true);
 //	}
 //}
-
-const char* vertexShaderSource = 
-	"#version 330 core\n"  
-	"layout (location = 0) in vec3 aPos;\n" 
-	"void main()\n"
-	"{\n"
-	"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n" 
-	"}\0";
-
-unsigned int vertexShader;
-
-const char* fragmentShadeSource =
-	"#version 330 core\n"
-	"out vec4 FragColor;\n"
-	"void main()\n"
-	"{\n"
-	"	FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-	"}\n";
-
-unsigned int fragmentShader;
-
-unsigned int shaderProgram;
-
-float vertices[] = {
-	-0.0f, -0.5f, 0.0f, // X   
-	 0.2f,  0.0f, 0.1f, // Y  
-	 0.0f,  0.5f, 0.0f  // Z 
-};
-
-unsigned int VBO;
-unsigned int VAO;
 
 int main()
 {
@@ -78,89 +49,102 @@ int main()
 
 	//glViewport(0, 0, 800, 600);
 	//glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
 	//std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-	glDebug(glGenBuffers(1, &VBO));
-	glDebug(glBindBuffer(GL_ARRAY_BUFFER, VBO););
-	glDebug(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW)); 
-
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
-
-	int success;
-	char infoLog[512];
-
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-
-	if (!success) {
-		glGetSamplerParameteriv(vertexShader, 512, NULL);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-	}
-
-	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glDebug(glShaderSource(fragmentShader, 1, &fragmentShadeSource, NULL););
-	glCompileShader(fragmentShader);
-
-	shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-
-	if (!success) {
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-	}
-
-	glUseProgram(shaderProgram);
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	glUseProgram(shaderProgram);
-
-	glGenVertexArrays(1, &VAO);
-	
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
 	bool isRunning = true;
-	SDL_Event event;
+	//SDL_Event event;
+
+	// HEXÁGONO — vértice central + 6 na borda, leque de 6 triângulos
+	std::vector<Vertex> data = {
+		{  0.00f,  0.000f, 0.0f,   1.0f, 1.0f, 1.0f,   0.50f, 0.500f },  // 0: centro
+		{  0.50f,  0.000f, 0.0f,   1.0f, 0.0f, 0.0f,   1.00f, 0.500f },  // 1:   0°
+		{  0.25f,  0.433f, 0.0f,   1.0f, 1.0f, 0.0f,   0.75f, 0.933f },  // 2:  60°
+		{ -0.25f,  0.433f, 0.0f,   0.0f, 1.0f, 0.0f,   0.25f, 0.933f },  // 3: 120°
+		{ -0.50f,  0.000f, 0.0f,   0.0f, 1.0f, 1.0f,   0.00f, 0.500f },  // 4: 180°
+		{ -0.25f, -0.433f, 0.0f,   0.0f, 0.0f, 1.0f,   0.25f, 0.067f },  // 5: 240°
+		{  0.25f, -0.433f, 0.0f,   1.0f, 0.0f, 1.0f,   0.75f, 0.067f },  // 6: 300°
+	};
+
+	std::vector<GLuint> ibo = {
+		0, 1, 2,   0, 2, 3,   0, 3, 4,
+		0, 4, 5,   0, 5, 6,   0, 6, 1,
+	};
+
+	Triangle helloWorld;
+	helloWorld.glCreateVao();
+	helloWorld.glBindVao();
+	helloWorld.glGenBuffer();
+	helloWorld.glDefineVertex(data);
+	helloWorld.glHandleAttrib();
+	helloWorld.glCreateIBO(ibo);
+	helloWorld.loadShaderIntoRam("./src/shader/vertex.glsl", helloWorld.s_TempShader);
+	helloWorld.shaderCompiler(GL_VERTEX_SHADER, helloWorld.v_shader_c);
+	helloWorld.loadShaderIntoRam("./src/shader/fragment.glsl", helloWorld.s_TempShader);
+	helloWorld.shaderCompiler(GL_FRAGMENT_SHADER, helloWorld.f_shader_c);
+	helloWorld.shaderLinker();
+	helloWorld.useProgram();
+
+	// QUADRADO — 4 vértices, 2 triângulos
+	std::vector<Vertex> data2 = {
+		{ -0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f },  // 0: sup-esq
+		{ -0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   0.0f, 0.0f },  // 1: inf-esq
+		{  0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f },  // 2: inf-dir
+		{  0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   1.0f, 1.0f },  // 3: sup-dir
+	};
+
+	std::vector<GLuint> ibo2 = {
+		0, 1, 2,   // triângulo inferior-esquerdo
+		0, 2, 3,   // triângulo superior-direito
+	};
+
+	Triangle hello;
+	hello.glCreateVao();
+	hello.glBindVao();
+	hello.glGenBuffer();
+	hello.glDefineVertex(data2);
+	hello.glHandleAttrib();
+	helloWorld.glCreateIBO(ibo2);
+	hello.loadShaderIntoRam("./src/shader/vertex.glsl", hello.s_TempShader);
+	hello.shaderCompiler(GL_VERTEX_SHADER, hello.v_shader_c);
+	hello.loadShaderIntoRam("./src/shader/fragment.glsl", hello.s_TempShader);
+	hello.shaderCompiler(GL_FRAGMENT_SHADER, hello.f_shader_c);
+	hello.shaderLinker();
+	hello.useProgram();
+
+	std::vector<Vertex> data3;
+	std::vector<GLuint> ibo3;
+	if (!loadOBJ("./src/model/SmallKey.obj", data3, ibo3)) {
+		std::cerr << "Não consegui abrir o .obj — confira o caminho\n";
+		return -1;
+	}
+
+	Triangle key;
+	key.glCreateVao();
+	key.glBindVao();
+	key.glGenBuffer();
+	key.glDefineVertex(data3);
+	key.glHandleAttrib();
+	key.glCreateIBO(ibo3);
+	key.loadShaderIntoRam("./src/shader/vertex.glsl", key.s_TempShader);
+	key.shaderCompiler(GL_VERTEX_SHADER, key.v_shader_c);
+	key.loadShaderIntoRam("./src/shader/fragment.glsl", key.s_TempShader);
+	key.shaderCompiler(GL_FRAGMENT_SHADER, key.f_shader_c);
+	key.shaderLinker();
+	key.useProgram();
+
+	int sum = 0;
 
 	while (isRunning) {
-		if (SDL_PollEvent(&event)) {
-			if (event.type == SDL_EVENT_QUIT) {
-				isRunning = false;
-			}
+		SDL_Event event;
+		while (SDL_PollEvent(&event)) {
+			if (event.type == SDL_EVENT_QUIT) isRunning = false;
 		}
 
-
-		/*processInput(window);
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		glUseProgram(shaderProgram);
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);*/
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		key.renderProgram();
+		SDL_GL_SwapWindow(window);
 	}
-
-	//glfwTerminate();   
+	
 	return 0;
 }

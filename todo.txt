@@ -1,3 +1,0 @@
-   L1 - [*] add lib sdl3 into the project (lib/sdl3...)
-d> L1 - [] swap the glfw for sdl3
-compile 
